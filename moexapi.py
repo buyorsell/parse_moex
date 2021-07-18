@@ -12,19 +12,7 @@ CORS(app)
 
 
 def get_parser_response(tick, time):
-    # engine = 'stock'
-    # market = 'shares'
-    # board = 'TQBR'
-    # request_url = ('https://iss.moex.com/iss/engines/{}/'
-    #               'markets/{}/boards/{}/securities.json'.format(engine, market, board))
-
-    # arguments = {}
-
     with requests.Session() as session:
-        # iss = apimoex.ISSClient(session, request_url, arguments)
-        # data = iss.get()
-        # df_meta = pd.DataFrame(data['securities'])
-        # data = apimoex.get_board_history(session, sec, board=board)
         sec = tick
         current_datetime = datetime.now()
         datee = current_datetime
@@ -44,18 +32,18 @@ def get_parser_response(tick, time):
                                           engine='stock',
                                           board='TQBR',
                                           columns='')
-
         res = pd.DataFrame(data2)
         sdf = list(res.begin)
+        f = {}
         rall = [i.split()[0] for i in sdf]
-        res2 = [rall, list(res.close)]
-    return res2
+        f['date'] = rall
+        f['close'] = list(res.close)
+    return f
 
 
 @app.route('/parse_moex/<sec>/<time>')
 def root(sec, time):
     data = get_parser_response(sec, time)
-    # print(data)
     return jsonify(data)
 
 
