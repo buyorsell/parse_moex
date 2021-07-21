@@ -74,6 +74,8 @@ async def getall():
 		date2 = single_date
 		parse_moex(date2)
 
-@app.get("/<dateg>")
+@app.get("/{dateg}")
 async def getdate(dateg):
-	parse_moex(dateg)
+	a = dateg.split('-')
+	parse_moex(date(int(a[0]), int(a[1]), int(a[2])))
+
