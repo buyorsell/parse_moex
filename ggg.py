@@ -14,14 +14,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-def parse_moex(date):
+def parse_moex(date2):
+
 	start = 0
 	while True:
-
 		url = (
 			f'http://iss.moex.com/iss/history/engines/stock/'
 			f'markets/shares/boards/TQBR/securities.json?'
-			f'date={date.strftime("%Y-%m-%d")}&start={start}'
+			f'date={date2.strftime("%Y-%m-%d")}&start={start}'
 		)
 
 		with requests.get(url) as response:
@@ -33,12 +33,11 @@ def parse_moex(date):
 				data_dict = dict(zip(stock_json['history']['columns'], data))
 
 				if data_dict['NUMTRADES'] != 0 and len(data_dict['SECID']) < 7:
-
 					stock = Stock(
 
 						boardid=data_dict['BOARDID'],
 
-						date=date,
+						date=date2,
 
 						secid=data_dict['SECID'],
 
@@ -53,16 +52,15 @@ def parse_moex(date):
 					)
 
 					moex_session.add(stock)
+
 			moex_session.commit()
 
-			print(date, stock_json['history']['data'] != [])
+			print(date2, stock_json['history']['data'] != [])
 
 			start += 100
 
 			if stock_json['history.cursor']['data'][0][1] < start:
 				break
-
-
 @app.get("/")
 async def getall():
 	current_datetime = datetime.now()
@@ -73,7 +71,7 @@ async def getall():
 		for n in range(int((end_date - start_date).days)):
 			yield start_date + timedelta(n)
 	for single_date in daterange(start_date, end_date):
-		date2 = single_date.strftime("%Y-%m-%d")
+		date2 = single_date
 		parse_moex(date2)
 
 @app.get("/<dateg>")
