@@ -3,6 +3,8 @@ import aiohttp
 from fastapi import FastAPI
 from datetime import timedelta, date, datetime
 from fastapi.middleware.cors import CORSMiddleware
+from isoweek import Week
+
 
 app = FastAPI()
 
@@ -63,16 +65,15 @@ async def parse_moex(date2):
                     break
 @app.get("/")
 async def getall():
-    current_datetime = datetime.now()
-    a = (str(current_datetime).split())[0].split('-')
-    end_date = date(int(a[0]), int(a[1]), int(a[2]))
-    start_date = date(2012, 1, 1)
-    def daterange(start_date, end_date):
-        for n in range(int((end_date - start_date).days)):
-            yield start_date + timedelta(n)
-    for single_date in daterange(start_date, end_date):
-        date2 = single_date
-        await parse_moex(date2)
+	current_datetime = datetime.now()
+	a = (str(current_datetime).split())[0].split('-')
+	end_date = date(int(a[0]), int(a[1]), int(a[2]))
+	start_date = date(2012, 1, 1)
+	for i in range(2011, int(a[0]) + 1):
+		for j in range(1, 53):
+			d = Week(i, j).friday()
+			await parse_moex(d)
+
 
 @app.get("/{dateg}")
 async def getdate(dateg):
