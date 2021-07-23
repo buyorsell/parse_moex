@@ -69,7 +69,7 @@ async def getall():
 	a = (str(current_datetime).split())[0].split('-')
 	end_date = date(int(a[0]), int(a[1]), int(a[2]))
 	start_date = date(2012, 1, 1)
-	for i in range(2011, int(a[0]) + 1):
+	for i in range(2016, int(a[0]) + 1):
 		for j in range(1, 53):
 			d = Week(i, j).friday()
 			await parse_moex(d)

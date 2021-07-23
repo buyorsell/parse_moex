@@ -43,7 +43,6 @@ async_engine = create_async_engine(
 )
 async def create_all(engine, meta):
     async with engine.begin() as conn:
-        await conn.run_sync(meta.drop_all)
         await conn.run_sync(meta.create_all)
 
 #Base.metadata.bind = async_engine
@@ -58,4 +57,4 @@ async_session = sessionmaker(
 
 #SyncDBSession = sessionmaker(bind=sync_engine)
 #sync_session = SyncDBSession()
-#asyncio.run(create_all(async_engine, Base.metadata))
+asyncio.run(create_all(async_engine, Base.metadata))
