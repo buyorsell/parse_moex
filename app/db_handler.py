@@ -57,4 +57,4 @@ async_session = sessionmaker(
 
 #SyncDBSession = sessionmaker(bind=sync_engine)
 #sync_session = SyncDBSession()
-asyncio.run(create_all(async_engine, Base.metadata))
+#asyncio.run(create_all(async_engine, Base.metadata))
